@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if [ -n "$GIT_SSH_KEY" ] && [ ! -d ~/.ssh ]; then
+  mkdir -p ~/.ssh
+  echo "$GIT_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  chmod 600 ~/.ssh/id_rsa
+  printf "Host *\n    StrictHostKeyChecking no\n    UserKnownHostsFile=/dev/null\n" > ~/.ssh/config
+fi
+
+if [ -n "$GIT_COMMITTER_FULL_NAME" ]; then
+  git config --global user.name "$GIT_COMMITTER_NAME"
+fi
+
+if [ -n "$GIT_COMMITTER_EMAIL" ]; then
+  git config --global user.email "$GIT_COMMITTER_EMAIL"
+fi
+
+/opt/bitnami/git/bin/git "$@"
